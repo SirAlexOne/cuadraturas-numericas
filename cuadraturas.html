@@ -217,7 +217,19 @@
 
         // Función Newton-Cotes (Simpson compuesto)
         function newtonCotes(func, a, b, m) {
-            const expr = func.replace(/x/g, 't');
+            let f;
+	    if (func === 'Math.exp(x)') {
+    		f = t => Math.exp(t);
+	    } else if (func === 'Math.sin(x)') {
+   		f = t => Math.sin(t);
+	    } else if (func === 'x*x') {
+    		f = t => t * t;
+	    } else if (func === 'Math.cos(2*x)') {
+    		f = t => Math.cos(2 * t);
+	    } else {
+    		const expr = func.replace(/x/g, 't');
+    		f = new Function('t', `return ${expr}`);
+	    }
             const f = new Function('t', `return ${expr}`);
             
             const h = (b - a) / m;
@@ -233,7 +245,19 @@
 
         // Función Gauss-Legendre
         function gaussLegendre(func, a, b, n) {
-            const expr = func.replace(/x/g, 't');
+            let f;
+	    if (func === 'Math.exp(x)') {
+    		f = t => Math.exp(t);
+	    } else if (func === 'Math.sin(x)') {
+   		f = t => Math.sin(t);
+	    } else if (func === 'x*x') {
+    		f = t => t * t;
+	    } else if (func === 'Math.cos(2*x)') {
+    		f = t => Math.cos(2 * t);
+	    } else {
+    		const expr = func.replace(/x/g, 't');
+    		f = new Function('t', `return ${expr}`);
+	    }
             const f = new Function('t', `return ${expr}`);
             
             const data = gaussData[n];
@@ -252,7 +276,19 @@
 
         // Función para actualizar el gráfico
         function updateChart(func, a, b) {
-            const expr = func.replace(/x/g, 't');
+            let f;
+	    if (func === 'Math.exp(x)') {
+    		f = t => Math.exp(t);
+	    } else if (func === 'Math.sin(x)') {
+   		f = t => Math.sin(t);
+	    } else if (func === 'x*x') {
+    		f = t => t * t;
+	    } else if (func === 'Math.cos(2*x)') {
+    		f = t => Math.cos(2 * t);
+	    } else {
+    		const expr = func.replace(/x/g, 't');
+    		f = new Function('t', `return ${expr}`);
+	    }
             const f = new Function('t', `return ${expr}`);
             
             const step = (b - a) / 100;
