@@ -216,116 +216,113 @@
         }
 
         // Función Newton-Cotes (Simpson compuesto)
-        function newtonCotes(func, a, b, m) {
-            let f;
-	    if (func === 'Math.exp(x)') {
-    		f = t => Math.exp(t);
-	    } else if (func === 'Math.sin(x)') {
-   		f = t => Math.sin(t);
-	    } else if (func === 'x*x') {
-    		f = t => t * t;
-	    } else if (func === 'Math.cos(2*x)') {
-    		f = t => Math.cos(2 * t);
-	    } else {
-    		const expr = func.replace(/x/g, 't');
-    		f = new Function('t', `return ${expr}`);
-	    }
-            const f = new Function('t', `return ${expr}`);
-            
-            const h = (b - a) / m;
-            let sum = f(a) + f(b);
-            
-            for (let i = 1; i < m; i++) {
-                const x = a + i * h;
-                sum += (i % 2 === 1) ? 4 * f(x) : 2 * f(x);
-            }
-            
-            return (h / 3) * sum;
-        }
+function newtonCotes(func, a, b, m) {
+    let f;
+    if (func === 'Math.exp(x)') {
+        f = t => Math.exp(t);
+    } else if (func === 'Math.sin(x)') {
+        f = t => Math.sin(t);
+    } else if (func === 'x*x') {
+        f = t => t * t;
+    } else if (func === 'Math.cos(2*x)') {
+        f = t => Math.cos(2 * t);
+    } else {
+        const expr = func.replace(/x/g, 't');
+        f = new Function('t', `return ${expr}`);
+    }
+    
+    const h = (b - a) / m;
+    let sum = f(a) + f(b);
+    
+    for (let i = 1; i < m; i++) {
+        const x = a + i * h;
+        sum += (i % 2 === 1) ? 4 * f(x) : 2 * f(x);
+    }
+    
+    return (h / 3) * sum;
+}
 
-        // Función Gauss-Legendre
-        function gaussLegendre(func, a, b, n) {
-            let f;
-	    if (func === 'Math.exp(x)') {
-    		f = t => Math.exp(t);
-	    } else if (func === 'Math.sin(x)') {
-   		f = t => Math.sin(t);
-	    } else if (func === 'x*x') {
-    		f = t => t * t;
-	    } else if (func === 'Math.cos(2*x)') {
-    		f = t => Math.cos(2 * t);
-	    } else {
-    		const expr = func.replace(/x/g, 't');
-    		f = new Function('t', `return ${expr}`);
-	    }
-            const f = new Function('t', `return ${expr}`);
-            
-            const data = gaussData[n];
-            const scale = (b - a) / 2;
-            const shift = (a + b) / 2;
-            
-            let sum = 0;
-            for (let i = 0; i < n; i++) {
-                const t = data.nodes[i];
-                const x = scale * t + shift;
-                sum += data.weights[i] * f(x);
-            }
-            
-            return scale * sum;
-        }
+// Función Gauss-Legendre
+function gaussLegendre(func, a, b, n) {
+    let f;
+    if (func === 'Math.exp(x)') {
+        f = t => Math.exp(t);
+    } else if (func === 'Math.sin(x)') {
+        f = t => Math.sin(t);
+    } else if (func === 'x*x') {
+        f = t => t * t;
+    } else if (func === 'Math.cos(2*x)') {
+        f = t => Math.cos(2 * t);
+    } else {
+        const expr = func.replace(/x/g, 't');
+        f = new Function('t', `return ${expr}`);
+    }
+    
+    const data = gaussData[n];
+    const scale = (b - a) / 2;
+    const shift = (a + b) / 2;
+    
+    let sum = 0;
+    for (let i = 0; i < n; i++) {
+        const t = data.nodes[i];
+        const x = scale * t + shift;
+        sum += data.weights[i] * f(x);
+    }
+    
+    return scale * sum;
+}
 
-        // Función para actualizar el gráfico
-        function updateChart(func, a, b) {
-            let f;
-	    if (func === 'Math.exp(x)') {
-    		f = t => Math.exp(t);
-	    } else if (func === 'Math.sin(x)') {
-   		f = t => Math.sin(t);
-	    } else if (func === 'x*x') {
-    		f = t => t * t;
-	    } else if (func === 'Math.cos(2*x)') {
-    		f = t => Math.cos(2 * t);
-	    } else {
-    		const expr = func.replace(/x/g, 't');
-    		f = new Function('t', `return ${expr}`);
-	    }
-            const f = new Function('t', `return ${expr}`);
-            
-            const step = (b - a) / 100;
-            const labels = [];
-            const data = [];
-            
-            for (let x = a; x <= b; x += step) {
-                labels.push(x.toFixed(2));
-                data.push(f(x));
+// Función para actualizar el gráfico
+function updateChart(func, a, b) {
+    let f;
+    if (func === 'Math.exp(x)') {
+        f = t => Math.exp(t);
+    } else if (func === 'Math.sin(x)') {
+        f = t => Math.sin(t);
+    } else if (func === 'x*x') {
+        f = t => t * t;
+    } else if (func === 'Math.cos(2*x)') {
+        f = t => Math.cos(2 * t);
+    } else {
+        const expr = func.replace(/x/g, 't');
+        f = new Function('t', `return ${expr}`);
+    }
+    
+    const step = (b - a) / 100;
+    const labels = [];
+    const data = [];
+    
+    for (let x = a; x <= b; x += step) {
+        labels.push(x.toFixed(2));
+        data.push(f(x));
+    }
+    
+    const ctx = document.getElementById('chart').getContext('2d');
+    if (window.myChart) window.myChart.destroy();
+    
+    window.myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: `f(x) = ${func.replace('Math.', '')}`,
+                data: data,
+                borderColor: '#3498db',
+                backgroundColor: 'rgba(52, 152, 219, 0.1)',
+                borderWidth: 2,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                x: { title: { display: true, text: 'x' } },
+                y: { title: { display: true, text: 'f(x)' } }
             }
-            
-            const ctx = document.getElementById('chart').getContext('2d');
-            if (window.myChart) window.myChart.destroy();
-            
-            window.myChart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: `f(x) = ${func.replace('Math.', '')}`,
-                        data: data,
-                        borderColor: '#3498db',
-                        backgroundColor: 'rgba(52, 152, 219, 0.1)',
-                        borderWidth: 2,
-                        fill: true
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        x: { title: { display: true, text: 'x' } },
-                        y: { title: { display: true, text: 'f(x)' } }
-                    }
-                }
-            });
         }
+    });
+}
 
         // Función principal de cálculo
         function calculate() {
